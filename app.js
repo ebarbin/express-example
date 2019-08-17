@@ -9,13 +9,12 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')))
 
-const adminData = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-app.use('/admin/', adminData.routes);
-app.use(shopRoutes);
+const errorControllers = require('./controllers/error');
 
-app.use((req, res, next) => {
-    res.status(404).render('404', { docTitle:'Error 404 - Page Not Found', path:'404' });
-});
+app.use('/admin/', adminRoutes);
+app.use('/', shopRoutes);
+app.use(errorControllers.get404);
 
 app.listen(3000);
