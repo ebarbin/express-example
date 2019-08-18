@@ -8,22 +8,22 @@
 <main class="main">
     <% if(prods.length > 0) { %>
         <div class="grid">
-            <% prods.forEach(function(prod){ %>
+            <% prods.forEach(function(product){ %>
                 <article class="card product-item">
                     <header class="product-item">
                         <h1 class="product-title">
-                            <%= prod.title %>
+                            <%= product.title %>
                         </h1>
                     </header>
                     <div class="card-image">
-                        <img src="<%= prod.imageUrl %>" alt="<%= prod.title %>">
+                        <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
                     </div>
                     <div class="card-content">
-                        <h2 class="product-price">$<%= prod.price %></h2>
-                        <p class="product-description"><%= prod.description %></p>
+                        <h2 class="product-price">$<%= product.price %></h2>
+                        <p class="product-description"><%= product.description %></p>
                     </div>
                     <div class="card-actions">
-                        <button class="btn">Add to Cart</button>
+                        <%- include('../includes/add-to-cart.ejs', {product: product}) %>
                     </div>
                 </article>
             <% }); %>

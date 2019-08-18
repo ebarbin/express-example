@@ -23,12 +23,29 @@ exports.getProducts = (req, res, next) => {
     });
 }
 
+exports.getProduct = (req, res, next) => {
+    const prodId = req.params.productId;
+    Product.fetchByIdAll(prodId).then(prod => {
+        res.render('shop/product-detail', {
+            product: prod, 
+            docTitle: 'Product Detail',
+            path:'/product-detail'
+        });
+    });
+}
+
 exports.getCart = (req, res, next) => {
 
     res.render('shop/cart', {
         docTitle: 'Your Cart',
         path:'/cart'
     });
+}
+
+exports.postCart = (req, res, next) => {
+    const prodId = req.body.productId;
+    console.log(prodId);
+    res.redirect('/cart');
 }
 
 exports.getOrders = (req, res, next) => {
