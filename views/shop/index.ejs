@@ -3,34 +3,34 @@
 </head>
 <body>
 
-    <%- include('../includes/navigation.ejs') %>
+<%- include('../includes/navigation.ejs') %>
 
-    <main class="main">
-        <% if(prods.length > 0) { %>
-            <div class="grid">
-                <% prods.forEach(function(prod){ %>
-                    <article class="card product-item">
-                        <header class="product-item">
-                            <h1 class="product-title">
-                                <%= prod.title %>
-                            </h1>
-                        </header>
-                        <div class="card-image">
-                            <img src="https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png" alt="A Book">
-                        </div>
-                        <div class="card-content">
-                            <h2 class="product-price">$19.9</h2>
-                            <p class="product-description">A very interesting book about so many...</p>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn">Add to Cart</button>
-                        </div>
-                    </article>
-                <% }); %>
-            </div>
-        <% } else { %>
-            <h1>No Products!</h1>
-        <% } %>
-    </main>
+<main class="main">
+    <% if(prods.length > 0) { %>
+        <div class="grid">
+            <% prods.forEach(function(prod){ %>
+                <article class="card product-item">
+                    <header class="product-item">
+                        <h1 class="product-title">
+                            <%= prod.title %>
+                        </h1>
+                    </header>
+                    <div class="card-image">
+                        <img src="<%= prod.imageUrl %>" alt="<%= prod.title %>">
+                    </div>
+                    <div class="card-content">
+                        <h2 class="product-price">$<%= prod.price %></h2>
+                        <p class="product-description"><%= prod.description %></p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn">Add to Cart</button>
+                    </div>
+                </article>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <h1>No Products!</h1>
+    <% } %>
+</main>
 
-    <%- include('../includes/end.ejs') %>
+<%- include('../includes/end.ejs') %>
