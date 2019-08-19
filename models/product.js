@@ -7,7 +7,7 @@ getProductsFromFile = () => {
         const p = path.join(rootDir, 'data', 'products.json');
 
         fs.readFile(p, (err, fileContent) => {
-            if(err || fileContent.byteLength == 0) 
+            if (err || fileContent.byteLength == 0) 
                 resolve([]);
             else
                 resolve(JSON.parse(fileContent));
@@ -19,7 +19,8 @@ getProductsFromFile = () => {
 
 module.exports = class Product {
 
-    constructor(title, imageUrl, description, price){ 
+    constructor(id, title, imageUrl, description, price){ 
+        this.id = id;
         this.title = title; 
         this.imageUrl = imageUrl;
         this.description = description;
@@ -27,13 +28,46 @@ module.exports = class Product {
     }
 
     save() {
-        this.id = Math.random().toString();
+
         const promise = new Promise((resolve, reject) => {
             getProductsFromFile().then((productsFileArray) => {
 
-                productsFileArray.push(this);
                 const p = path.join(rootDir, 'data', 'products.json');
-                fs.writeFile(p, JSON.stringify(productsFileArray), (err) => {
+
+                if (this.id) {
+                    const existingProductIndex = productsFileArray.findIndex( prod => prod.id === this.id);
+                    const updatedProducts = [... productsFileArray];
+                    updatedProducts[existingProductIndex] = this;
+
+                    fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+                        resolve();
+                    });
+
+                } else {
+                    this.id = Math.random().toString();
+                    productsFileArray.push(this);
+                    fs.writeFile(p, JSON.stringify(productsFileArray), (err) => {
+                        resolve();
+                    });
+                }
+            });
+        });
+
+        return promise;
+    }
+
+    delete() {
+
+        const promise = new Promise((resolve, reject) => {
+            getProductsFromFile().then((productsFileArray) => {
+
+                const p = path.join(rootDir, 'data', 'products.json');
+
+                const existingProductIndex = productsFileArray.findIndex( prod => prod.id === this.id);
+                const updatedProducts = [... productsFileArray];
+                updatedProducts.splice( existingProductIndex , 1);
+
+                fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
                     resolve();
                 });
             });
@@ -46,7 +80,7 @@ module.exports = class Product {
         return getProductsFromFile();
     }
 
-    static fetchByIdAll(id) {
+    static fetchById(id) {
         const promise = new Promise((resolve, reject) => {
             getProductsFromFile().then(data => {
                 const result = data.find(d => {
