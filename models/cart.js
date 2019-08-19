@@ -14,7 +14,7 @@ module.exports = class Cart {
             fs.readFile(p, (err, fileContent) => {
 
                 let cart = {products: [], totalPrice: 0};
-                if (!err || (fileContent && fileContent.byteLength > 0)) {
+                if (!err && (fileContent && fileContent.byteLength > 0)) {
                     cart = JSON.parse(fileContent);
                 }
 
@@ -42,6 +42,42 @@ module.exports = class Cart {
             });
         });
 
+        return promise;
+    }
+
+    static deleteProductById(id, productPrice) {
+        const promise = new Promise((resolve, reject) => {
+
+            //Fetch the previus cart
+            fs.readFile(p, (err, fileContent) => {
+
+                if (err) {
+                    resolve();
+                }
+
+                const updatedCart = {... fileContent};
+                const product = cart.products.find(prod => prod.id === id);
+                const productQty = product.qty;
+                updatedCart.products = updatedCart.products.filter(prod => prod.id !== id);
+                updatedCart.totalPrice = updatedCart.totalPrice - (productPrice * productQty);
+
+                fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
+                    resolve();
+                });
+            });
+        });
+
+        return promise;
+    }
+
+    static getCart() {
+        const promise = new Promise((resolve, reject) => {
+            fs.readFile(p, (err, fileContent) => {
+                if (err || !fileContent || fileContent.byteLength == 0) reject();
+                const cart = JSON.parse(fileContent);
+                resolve(cart);
+            });
+        });
         return promise;
     }
 }
