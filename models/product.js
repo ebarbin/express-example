@@ -8,10 +8,8 @@ const p = path.join(rootDir, 'data', 'products.json');
 getProductsFromFile = () => {
     const promise = new Promise((resolve, reject) => {
         fs.readFile(p, (err, fileContent) => {
-            if (err || fileContent.byteLength == 0) 
-                resolve([]);
-            else
-                resolve(JSON.parse(fileContent));
+            if (err || fileContent.byteLength == 0) resolve([]);
+            else resolve(JSON.parse(fileContent));
         });
     });
 
@@ -55,22 +53,22 @@ module.exports = class Product {
         return promise;
     }
 
-    delete() {
+    static deleteById(productId, cb) {
 
-        const productId = this.id;
         const promise = new Promise((resolve, reject) => {
             getProductsFromFile().then((products) => {
-           //     const product = products.find(prod => prod.id === productId);
-              //  const productIndex = products.findIndex(prod => prod.id === productId);
-               // products = products.slice(productIndex, 1);
-               // let updatedProducts = [... products];
+
+                const product = products.find(prod => prod.id === productId);
+
                 const updatedProducts = products.filter(prod => prod.id !== productId);
-                
+
                 fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
-                    console.log(err);
-                  //  Cart.deleteProductById(product.id, product.price).then( ()=> {
+                   console.log(product);
+                   Cart.deleteProduct(product).then( ()=> {
                         resolve();
-                  //  });
+                    }, (err) => {
+                        reject(err);
+                    });
                 });
             });
         });

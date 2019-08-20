@@ -40,10 +40,10 @@ exports.postDeleteProduct = (req, res, next) => {
     
     const prodId = req.body.id;
 
-    const product = new Product(prodId, null, null, null, null);
-
-    product.delete().then(() => {
+    Product.deleteById(prodId).then(() => {
         res.redirect('/');
+    }).catch(e => {
+        console.log(e);
     });
 }
 

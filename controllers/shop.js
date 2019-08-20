@@ -38,22 +38,11 @@ exports.getProduct = (req, res, next) => {
 exports.getCart = (req, res, next) => {
 
     Cart.getCart().then(cart => {
-        Product.fetchAll().then(products => {
-
-            const cartProducts = [];
-            products.forEach(prod => {
-                const cartProductData = cart.products.find(p => p.id === prod.id);
-                if (cartProductData) {
-                    cartProducts.push({productData: prod, qty: cartProductData.qty});
-                }
-            })
-
-            res.render('shop/cart', {
-                docTitle: 'Your Cart',
-                path:'/cart',
-                products: cartProducts
-            });
-        })
+        res.render('shop/cart', {
+            docTitle: 'Your Cart',
+            path:'/cart',
+            products: cart.products
+        });
     }, err => {
         res.redirect('/');
     });
@@ -64,7 +53,7 @@ exports.postCart = (req, res, next) => {
     const prodId = req.body.productId;
 
     Product.fetchById(prodId).then(prod => {
-        Cart.addProduct(prod.id, parseFloat(prod.price)).then(() => {
+        Cart.addProduct(prod).then(() => {
             res.redirect('/cart');
         });
     });
