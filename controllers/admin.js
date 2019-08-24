@@ -9,65 +9,62 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    
-    const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
-    const price = req.body.price;
-    const description = req.body.description;
-    const product = new Product(null, title, imageUrl, description, price);
-
-    product.save().then(() => {
+    Product.create({
+        title: req.body.title,
+        price: req.body.price,
+        imageUrl: req.body.imageUrl,
+        description: req.body.description
+    }).then(() => {
         res.redirect('/');
-    });
+    }).catch(err => console.log(err));
 }
-
 
 exports.postEditProduct = (req, res, next) => {
     
-    const prodId = req.body.id;
-    const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
-    const price = req.body.price;
-    const description = req.body.description;
+    Product.findByPk(req.body.id).then(prod => {
 
-    const product = new Product(prodId, title, imageUrl, description, price);
-    product.save().then(() => {
+        prod.title = req.body.title;
+        prod.imageUrl = req.body.imageUrl;
+        prod.price = req.body.price;
+        prod.description = req.body.description;
+
+        return prod.save();
+
+    }).then( () => {
         res.redirect('/admin/products');
-    });
+    }).catch(err => console.log(err));
 }
 
 exports.postDeleteProduct = (req, res, next) => {
-    
-    const prodId = req.body.id;
 
-    Product.deleteById(prodId).then(() => {
+    Product.findByPk(req.body.id).then(prod => {
+        return prod.destroy();
+    }).then( () => {
         res.redirect('/');
-    }).catch(e => {
-        console.log(e);
-    });
+    }).catch(err => console.log(err));
 }
 
 exports.getEditProduct = (req, res, next) => {
-    const editMode = req.query.edit;
-    const prodId = req.params.productId;
+    Product.findByPk(req.params.productId).then(prod => {
 
-    Product.fetchById(prodId).then( (prod) => {
+        if (!prod) return res.redirect('/');
+
         res.render('admin/edit-product', {
             docTitle: 'Edit Product',
             path:'/admin/products',
-            editing: editMode,
+            editing: req.query.edit,
             product: prod
         });
-    });
+    }).catch(e => { console.log(e); });
 }
 
 exports.getProducts = (req, res, next) => {
    
-    Product.fetchAll().then((data) => {
+    Product.findAll().then(products => {
         res.render('admin/products', {
-            prods: data, 
+            prods: products, 
             docTitle: 'Admin Products',
             path:'/admin/products'
         });
-    });
+    }).catch(err => { console.log(err) });
 }
