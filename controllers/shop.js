@@ -11,7 +11,7 @@ exports.getIndex = (req, res, next) => {
         });
     }).catch(err => { console.log(err) });
 }
-
+ 
 exports.getProducts = (req, res, next) => {
     Product.findAll().then(products => {
         res.render('shop/product-list', {
